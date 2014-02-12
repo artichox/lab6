@@ -25,8 +25,11 @@ function addProjectDetails(e) {
 	var projectID = $(this).closest('.project').attr('id');
 	// get rid of 'project' from the front of the id 'project3'
 	var idNumber = projectID.substr('project'.length);
-
-	console.log("User clicked on project " + idNumber);
+	
+	var URL = "/project/" + idNumber;
+	console.log("User clicked on project " + idNumber + " URL : " + URL);
+	
+	$.get(URL, addProject);
 }
 
 /*
@@ -35,4 +38,30 @@ function addProjectDetails(e) {
  */
 function randomizeColors(e) {
 	console.log("User clicked on color button");
+	$.get('/palette', colorify);
+}
+
+function addProject(result){
+	console.log("result: " + result + " id: " + result['id'] + " title:" + result['title']);
+
+	var projectID = result['id'];
+	var detailsDiv= $("#project"+projectID+ " .details");
+	
+	var html = '<a href="#" class="thumbnail"><img src="'+ result['image'] + '" class="detailsImage"/>' +  
+		'</p>' + result['title'] + ' </p> ' 
+		+ '<p><small>' + result['date']+ '</p> </a>'
+		+ result['summary'];
+		
+
+	detailsDiv.html(html);
+}
+
+function colorify(result){
+	var colors = result['colors']['hex'];
+
+	$('body').css('background-color', colors[0]);
+	$('.thumbnail').css('background-color', colors[1]);
+	$('h1, h2, h3, h4, h5, h5').css('color', colors[2]);
+	$('p').css('color', colors[3]);
+	$('.project img').css('opacity', .75);
 }
